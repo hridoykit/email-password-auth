@@ -1,4 +1,4 @@
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
@@ -11,6 +11,7 @@ const auth = getAuth(app);
 
 const LoginBootstrap = () => {
   const [success, setSuccess] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
 
   const handleLoginSubmission = (e) => {
     e.preventDefault();
@@ -32,6 +33,29 @@ const LoginBootstrap = () => {
       })
   };
 
+  const handleResetPassword = () =>{
+    if(!userEmail){
+      alert('please enter your email address')
+      return;
+    }
+    sendPasswordResetEmail(auth, userEmail)
+      .then(() =>{
+        //password reset email send
+        alert('password reset email send');
+      })
+      .catch(err =>{
+        console.log("error: ", err);
+      });
+  };
+
+   const handleEmailBlur = e =>{
+    // e.preventDefault();
+    // const email = e.target.email.value;
+    const email = e.target.value;
+    console.log(email);
+    setUserEmail(email)
+   };
+
   return (
     <div className="w-50 mx-auto">
       <h3 className="text-center text-primary">Please Login!!</h3>
@@ -41,7 +65,7 @@ const LoginBootstrap = () => {
             Email
           </Form.Label>
           <Col sm={10}>
-            <Form.Control name="email" type="email" placeholder="Email" />
+            <Form.Control onBlur={handleEmailBlur} name="email" type="email" placeholder="Email" />
           </Col>
         </Form.Group>
 
@@ -83,6 +107,12 @@ const LoginBootstrap = () => {
             {" "}
             Register
           </Link>
+        </small>
+      </p>
+      <p className="text-end">
+        <small>
+          Forget password?
+          <Button onClick={handleResetPassword} className="text-decoration-none" variant="link">Reset password</Button>
         </small>
       </p>
     </div>

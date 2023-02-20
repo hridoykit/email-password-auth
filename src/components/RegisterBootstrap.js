@@ -1,6 +1,8 @@
 import {
   createUserWithEmailAndPassword,
-  getAuth
+  getAuth,
+  sendEmailVerification,
+  updateProfile
 } from "firebase/auth";
 import { useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
@@ -17,13 +19,15 @@ const RegisterBootstrap = () => {
     e.preventDefault();
     setSuccess(false);
 
+    const name = e.target.name.value;
     const email = e.target.email.value;
     const pass = e.target.password.value;
-    console.log(email, pass);
 
-    //validate the password using regular expression
-    const regex =
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+    console.log(email, pass, name);
+
+    //validate password
+    const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+
     if (!regex.test(pass)) {
       setPassErr(
         "password should contain atleast one number and one special character"
@@ -39,7 +43,9 @@ const RegisterBootstrap = () => {
         setSuccess(true);
         // <----after creating a user form will be reset here---->
         e.target.reset();
-        // verifyEmail(); 
+        
+        verifyEmail();
+        updateUserName(name); 
       })
       .catch((err) => {
         console.log("error", err);
@@ -49,25 +55,37 @@ const RegisterBootstrap = () => {
   };
 
   //<----email address verification---->
-  // const verifyEmail = (e) => {
-  //   sendEmailVerification(auth.currentUser).then(() => {
-  //     //verification email send
-  //     alert("please check your email and verify email address");
-  //   });
-  // };
+  const verifyEmail = (e) => {
+    sendEmailVerification(auth.currentUser).then(() => {
+      //verification email send
+      alert("please check your email and verify email address");
+    });
+  };
+
+  const updateUserName = name =>{
+    updateProfile(auth.currentUser, {
+      displayName: name
+    })
+      .then(() =>{
+        console.log('display name updated');
+      })
+      .then(err=>console.log('error:', err));
+  };
 
   return (
     <div className="w-50 mx-auto">
+
       <h3 className="text-center text-primary">Please Register</h3>
+      
       <Form onSubmit={handleRegisterSubmission} className="mt-3">
-        {/* <Row>
-      <Col>
-          <Form.Control placeholder="First name" />
-        </Col>
-        <Col>
-          <Form.Control placeholder="Last name" />
-        </Col>
-      </Row> */}
+      <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
+          <Form.Label column sm={2}>
+            Name
+          </Form.Label>
+          <Col sm={10}>
+            <Form.Control name="name" type="text" placeholder="Full Name" />
+          </Col>
+        </Form.Group>
 
         <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
           <Form.Label column sm={2}>
