@@ -19,14 +19,11 @@ const LoginBootstrap = () => {
 
     const email = e.target.email.value;
     const password = e.target.password.value;
-    console.log(email, password);
 
     signInWithEmailAndPassword(auth, email, password)
       .then(res =>{
         const user = res.user;
-        console.log(user);
-        e.target.reset();
-        
+        e.target.reset();  
       })
       .then(err =>{
         console.log('error:', err);
@@ -34,10 +31,12 @@ const LoginBootstrap = () => {
   };
 
   const handleResetPassword = () =>{
+
     if(!userEmail){
       alert('please enter your email address')
       return;
-    }
+    };
+
     sendPasswordResetEmail(auth, userEmail)
       .then(() =>{
         //password reset email send
@@ -52,7 +51,6 @@ const LoginBootstrap = () => {
     // e.preventDefault();
     // const email = e.target.email.value;
     const email = e.target.value;
-    console.log(email);
     setUserEmail(email)
    };
 

@@ -23,9 +23,7 @@ const RegisterBootstrap = () => {
     const email = e.target.email.value;
     const pass = e.target.password.value;
 
-    console.log(email, pass, name);
-
-    //validate password
+    //<----validate password---->
     const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 
     if (!regex.test(pass)) {
@@ -39,9 +37,8 @@ const RegisterBootstrap = () => {
     createUserWithEmailAndPassword(auth, email, pass)
       .then((res) => {
         const user = res.user;
-        console.log(user);
         setSuccess(true);
-        // <----after creating a user form will be reset here---->
+
         e.target.reset();
         
         verifyEmail();
@@ -49,12 +46,12 @@ const RegisterBootstrap = () => {
       })
       .catch((err) => {
         console.log("error", err);
-        //set firebase email duplication error
+        //firebase email duplication error
         setPassErr(err.message);
       });
   };
 
-  //<----email address verification---->
+  //<----verify email address---->
   const verifyEmail = (e) => {
     sendEmailVerification(auth.currentUser).then(() => {
       //verification email send
@@ -62,6 +59,7 @@ const RegisterBootstrap = () => {
     });
   };
 
+  //<----update user profile---->
   const updateUserName = name =>{
     updateProfile(auth.currentUser, {
       displayName: name
@@ -78,7 +76,7 @@ const RegisterBootstrap = () => {
       <h3 className="text-center text-primary">Please Register</h3>
       
       <Form onSubmit={handleRegisterSubmission} className="mt-3">
-      <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
+      <Form.Group as={Row} className="mb-3" controlId="formHorizontalName">
           <Form.Label column sm={2}>
             Name
           </Form.Label>
@@ -113,10 +111,10 @@ const RegisterBootstrap = () => {
           </Col>
         </Form.Group>
 
-        {/* show password validate error mgs */}
+        {/* password validate error mgs */}
         <p className="text-danger text-center">{passErr}</p>
 
-        {/* after creating a user show successfull mgs*/}
+        {/* successfull mgs*/}
         {success && <p className='text-success text-center'> User created successfully </p>}
 
         <Form.Group as={Row} className="mb-3">
